@@ -46,12 +46,12 @@
             // 
             // graphImage
             // 
+            this.graphImage.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.graphImage.BackColor = System.Drawing.SystemColors.ControlDark;
             this.graphImage.Cursor = System.Windows.Forms.Cursors.Default;
-            this.graphImage.Dock = System.Windows.Forms.DockStyle.Fill;
             this.graphImage.Location = new System.Drawing.Point(0, 0);
             this.graphImage.Name = "graphImage";
-            this.graphImage.Size = new System.Drawing.Size(1045, 656);
+            this.graphImage.Size = new System.Drawing.Size(0, 0);
             this.graphImage.TabIndex = 0;
             this.graphImage.TabStop = false;
             this.graphImage.Paint += new System.Windows.Forms.PaintEventHandler(this.graphImage_Paint);
@@ -147,7 +147,7 @@
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "I stealz datas";
             ((System.ComponentModel.ISupportInitialize)(this.graphImage)).EndInit();
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();

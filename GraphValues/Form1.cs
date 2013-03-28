@@ -27,6 +27,7 @@ namespace GraphValues
         public MainForm()
         {
             InitializeComponent();
+            
         }
 
         private void menuFileOpen_Click(object sender, EventArgs e)
@@ -38,7 +39,14 @@ namespace GraphValues
                 Bitmap bmp = new Bitmap(open.FileName);
                 graphImage.Image = bmp;
             }
-            _boundaryMode = true;
+
+            graphImage.Width = graphImage.Image.Width;
+            graphImage.Height = graphImage.Image.Height;
+
+            graphImage.Location = new Point((this.Width / 2) - (graphImage.Width / 2),
+                (this.Height / 2) - (graphImage.Height / 2));
+
+            SetMode(Mode.Boundary);
         }
 
         private void menuFileExit_Click(object sender, EventArgs e)
@@ -138,9 +146,10 @@ namespace GraphValues
 
         private PointF GetScalePoint(Point visPoint)
         {
-            int startOffset = drawingRect.X;
-            float relX = visPoint.X - startOffset;
-            Debug.WriteLine("relX, pointX, offset, width = " + relX + ", " + visPoint.X + ", " + startOffset + ", " + drawingRect.Width);
+            float relX = visPoint.X - drawingRect.X;
+            // rectangle is wrong way up compared to the graph
+            float relY = drawingRect.Height - visPoint.Y; 
+
             float percentX = (relX / (float)drawingRect.Width) * 100f;
             System.Diagnostics.Debug.WriteLine("percentX = " + percentX);
 
