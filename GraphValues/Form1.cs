@@ -155,18 +155,24 @@ namespace GraphValues
 
         private PointF GetScalePoint(Point visPoint)
         {
-            float relX = visPoint.X - drawingRect.X;
+            float relX = visPoint.X - drawingRect.Left;
             // rectangle is wrong way up compared to the graph
-            float relY = drawingRect.Height - visPoint.Y;
+            // so we first find where we are whilst upside down
+            // then flip, by subtracting that from the height.
+            float relY = visPoint.Y - drawingRect.Top;
+            relY = drawingRect.Height - relY;
 
             float percentX = (relX / (float)drawingRect.Width);
-            System.Diagnostics.Debug.WriteLine("percentX = " + percentX);
+            float percentY = (relY / (float)drawingRect.Height);
+            System.Diagnostics.Debug.WriteLine("percents = " + percentX + ", " + percentY);
 
             float xAxisLength = _axisData[(int)AxisData.XEnd] - _axisData[(int)AxisData.XStart];
             float realXVal = _axisData[(int)AxisData.XStart] + (xAxisLength * percentX);
-            Debug.WriteLine("realXVal = " + realXVal);
+            float yAxisLength = _axisData[(int)AxisData.YEnd] - _axisData[(int)AxisData.YStart];
+            float realYVal = _axisData[(int)AxisData.YStart] + (yAxisLength * percentY);
+            Debug.WriteLine("realVals = " + realXVal + ", " + realYVal);
 
-            return new PointF(realXVal, 0f);
+            return new PointF(realXVal, realYVal);
         }
 
         private void ValidatingAxisText(object sender, CancelEventArgs e)
