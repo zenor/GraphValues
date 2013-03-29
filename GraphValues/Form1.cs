@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 using System.Diagnostics;
 
 namespace GraphValues
@@ -58,6 +59,22 @@ namespace GraphValues
                 (graphImage.Parent.Height / 2) - (graphImage.Height / 2));
 
             SetMode(Mode.Boundary);
+        }
+
+        private void menuFileSaveAs_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog save = new SaveFileDialog();
+            save.Filter = "CSV File (*.csv)|*.csv";
+
+            if (save.ShowDialog() == DialogResult.OK)
+            {
+                string filename = save.FileName;
+                StreamWriter writer = new StreamWriter(filename);
+                foreach (PointF point in _dataPoints)
+                    writer.WriteLine(point.X.ToString() + "," + point.Y.ToString());
+
+                writer.Close();
+            }
         }
 
         private void menuFileExit_Click(object sender, EventArgs e)
@@ -130,6 +147,8 @@ namespace GraphValues
                     AddPoint(point);
                 else if (e.Button == System.Windows.Forms.MouseButtons.Right)
                     RemovePoint(point);
+
+                menuFileSaveAs.Enabled = _dataPoints.Count > 0 ? true : false;
 
                 Debug.WriteLine("num points = " + _visPoints.Count);
                 for (int i = 0; i < _visPoints.Count; i++)
