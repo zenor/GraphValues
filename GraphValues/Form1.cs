@@ -13,6 +13,8 @@ namespace GraphValues
 {
     public partial class MainForm : Form
     {
+        const int DELETE_TOLERENCE_VIS = 3;
+
         private Point _start = new Point();
         bool _axisMode, _pointMode;
         bool _drawing = false;
@@ -124,16 +126,14 @@ namespace GraphValues
             {
                 Point point = new Point(e.X, e.Y);
 
-                // The code can handle points placed outside of the drawing rect
-                // but we will disallow that to prevent polluting the data and screen
-                if (point.X < drawingRect.Left || point.X > drawingRect.Right
-                    || point.Y < drawingRect.Top || point.Y > drawingRect.Bottom)
-                    return;
+                if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                    AddPoint(point);
+                else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+                    RemovePoint(point);
 
-                _visPoints.Add(point);
-                graphImage.Invalidate();
-
-                _dataPoints.Add(GetScalePoint(point));
+                Debug.WriteLine("num points = " + _visPoints.Count);
+                for (int i = 0; i < _visPoints.Count; i++)
+                    Debug.WriteLine("click. " + _visPoints[i].ToString() + "|||" + _dataPoints[i].ToString());
             }
         }
 
@@ -157,6 +157,43 @@ namespace GraphValues
             {
                 _pointMode = toolStripButtonPoint.Checked = true;
                 _axisMode = toolStripButtonBoundary.Checked = false;
+            }
+        }
+
+        private void AddPoint(Point point)
+        {
+            // The code can handle points placed outside of the drawing rect
+            // but we will disallow that to prevent polluting the data and screen
+            if (point.X < drawingRect.Left || point.X > drawingRect.Right
+                || point.Y < drawingRect.Top || point.Y > drawingRect.Bottom)
+                return;
+
+            _visPoints.Add(point);
+            graphImage.Invalidate();
+
+            _dataPoints.Add(GetScalePoint(point));
+        }
+
+        private void RemovePoint(Point point)
+        {
+            //foreach (Point visPoint in _visPoints)
+            int indexToRemove = -1;
+            for (int i = 0; i < _visPoints.Count; i++)
+            {
+                if (point.X > _visPoints[i].X - DELETE_TOLERENCE_VIS && point.X < _visPoints[i].X + DELETE_TOLERENCE_VIS
+                    && point.Y > _visPoints[i].Y - DELETE_TOLERENCE_VIS && point.Y < _visPoints[i].Y + DELETE_TOLERENCE_VIS)
+                {
+                    indexToRemove = i;
+                    break;
+                }
+            }
+
+            // If we ever start sorting lists, this could become troublesome.
+            if (indexToRemove >= 0)
+            {
+                _visPoints.RemoveAt(indexToRemove);
+                _dataPoints.RemoveAt(indexToRemove);
+                graphImage.Invalidate();
             }
         }
 
