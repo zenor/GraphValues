@@ -123,6 +123,13 @@ namespace GraphValues
             if (_pointMode)
             {
                 Point point = new Point(e.X, e.Y);
+
+                // The code can handle points placed outside of the drawing rect
+                // but we will disallow that to prevent polluting the data and screen
+                if (point.X < drawingRect.Left || point.X > drawingRect.Right
+                    || point.Y < drawingRect.Top || point.Y > drawingRect.Bottom)
+                    return;
+
                 _visPoints.Add(point);
                 graphImage.Invalidate();
 
