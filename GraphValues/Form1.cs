@@ -34,6 +34,8 @@ namespace GraphValues
 
         enum Mode {Boundary, Point};
 
+        string _currentSaveFile = "";
+
         public MainForm()
         {
             InitializeComponent();
@@ -68,12 +70,8 @@ namespace GraphValues
 
             if (save.ShowDialog() == DialogResult.OK)
             {
-                string filename = save.FileName;
-                StreamWriter writer = new StreamWriter(filename);
-                foreach (PointF point in _dataPoints)
-                    writer.WriteLine(point.X.ToString() + "," + point.Y.ToString());
-
-                writer.Close();
+                _currentSaveFile = save.FileName;
+                Save(sender, e);
             }
         }
 
@@ -149,6 +147,7 @@ namespace GraphValues
                     RemovePoint(point);
 
                 menuFileSaveAs.Enabled = _dataPoints.Count > 0 ? true : false;
+                menuFileSave.Enabled = (_currentSaveFile != "" && _dataPoints.Count > 0) ? true : false;
 
                 Debug.WriteLine("num points = " + _visPoints.Count);
                 for (int i = 0; i < _visPoints.Count; i++)
@@ -256,6 +255,18 @@ namespace GraphValues
             }
             foreach (int i in _axisData)
                 Debug.WriteLine("axis data: " + i);
+        }
+
+        private void Save(object sender, EventArgs e)
+        {
+            if (_currentSaveFile == "")
+                return;
+
+            StreamWriter writer = new StreamWriter(_currentSaveFile);
+            foreach (PointF point in _dataPoints)
+                writer.WriteLine(point.X.ToString() + "," + point.Y.ToString());
+
+            writer.Close();
         }
     }
 }

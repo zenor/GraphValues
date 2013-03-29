@@ -50,6 +50,7 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.menuFileSave = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.graphImage)).BeginInit();
             this.menuStrip.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -91,6 +92,7 @@
             // 
             this.menuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuFileOpen,
+            this.menuFileSave,
             this.menuFileSaveAs,
             this.menuFileExit});
             this.menuFile.Name = "menuFile";
@@ -280,6 +282,14 @@
             this.dataGridView1.Size = new System.Drawing.Size(107, 77);
             this.dataGridView1.TabIndex = 0;
             // 
+            // menuFileSave
+            // 
+            this.menuFileSave.Enabled = false;
+            this.menuFileSave.Name = "menuFileSave";
+            this.menuFileSave.Size = new System.Drawing.Size(152, 22);
+            this.menuFileSave.Text = "Save";
+            this.menuFileSave.Click += new System.EventHandler(this.Save);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -330,6 +340,7 @@
         private System.Windows.Forms.ToolStripLabel lblYStart;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.ToolStripMenuItem menuFileSaveAs;
+        private System.Windows.Forms.ToolStripMenuItem menuFileSave;
     }
 }
 
