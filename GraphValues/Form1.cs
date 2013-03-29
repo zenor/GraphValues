@@ -28,9 +28,7 @@ namespace GraphValues
         };
         List<float> _axisData = new List<float>(4);
         List<Point> _visPoints = new List<Point>();
-        List<PointF> _dataPoints = new List<PointF>();
-
-        //public BindingList<PointF> DataPoints 
+        BindingList<DataPoint> _dataPoints = new BindingList<DataPoint>();
 
         enum Mode {Boundary, Point};
 
@@ -42,6 +40,8 @@ namespace GraphValues
 
             for (int i = 0; i < 4; i++)
                 _axisData.Add(0f);
+
+            dgvDataPoints.DataSource = _dataPoints;
         }
 
         private void menuFileOpen_Click(object sender, EventArgs e)
@@ -215,7 +215,7 @@ namespace GraphValues
             }
         }
 
-        private PointF GetScalePoint(Point visPoint)
+        private DataPoint GetScalePoint(Point visPoint)
         {
             float relX = visPoint.X - drawingRect.Left;
             // rectangle is wrong way up compared to the graph
@@ -234,7 +234,7 @@ namespace GraphValues
             float realYVal = _axisData[(int)AxisData.YStart] + (yAxisLength * percentY);
             Debug.WriteLine("realVals = " + realXVal + ", " + realYVal);
 
-            return new PointF(realXVal, realYVal);
+            return new DataPoint(realXVal, realYVal);
         }
 
         private void ValidatingAxisText(object sender, CancelEventArgs e)
@@ -263,7 +263,7 @@ namespace GraphValues
                 return;
 
             StreamWriter writer = new StreamWriter(_currentSaveFile);
-            foreach (PointF point in _dataPoints)
+            foreach (DataPoint point in _dataPoints)
                 writer.WriteLine(point.X.ToString() + "," + point.Y.ToString());
 
             writer.Close();

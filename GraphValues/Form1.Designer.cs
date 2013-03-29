@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.graphImage = new System.Windows.Forms.PictureBox();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.menuFile = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFileOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuFileSave = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFileSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFileExit = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -49,8 +51,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.menuFileSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.dgvDataPoints = new System.Windows.Forms.DataGridView();
+            this.dataPointBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.graphImage)).BeginInit();
             this.menuStrip.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -59,7 +61,8 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDataPoints)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataPointBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // graphImage
@@ -102,22 +105,30 @@
             // menuFileOpen
             // 
             this.menuFileOpen.Name = "menuFileOpen";
-            this.menuFileOpen.Size = new System.Drawing.Size(152, 22);
+            this.menuFileOpen.Size = new System.Drawing.Size(114, 22);
             this.menuFileOpen.Text = "Open";
             this.menuFileOpen.Click += new System.EventHandler(this.menuFileOpen_Click);
+            // 
+            // menuFileSave
+            // 
+            this.menuFileSave.Enabled = false;
+            this.menuFileSave.Name = "menuFileSave";
+            this.menuFileSave.Size = new System.Drawing.Size(114, 22);
+            this.menuFileSave.Text = "Save";
+            this.menuFileSave.Click += new System.EventHandler(this.Save);
             // 
             // menuFileSaveAs
             // 
             this.menuFileSaveAs.Enabled = false;
             this.menuFileSaveAs.Name = "menuFileSaveAs";
-            this.menuFileSaveAs.Size = new System.Drawing.Size(152, 22);
+            this.menuFileSaveAs.Size = new System.Drawing.Size(114, 22);
             this.menuFileSaveAs.Text = "Save As";
             this.menuFileSaveAs.Click += new System.EventHandler(this.menuFileSaveAs_Click);
             // 
             // menuFileExit
             // 
             this.menuFileExit.Name = "menuFileExit";
-            this.menuFileExit.Size = new System.Drawing.Size(152, 22);
+            this.menuFileExit.Size = new System.Drawing.Size(114, 22);
             this.menuFileExit.Text = "Exit";
             this.menuFileExit.Click += new System.EventHandler(this.menuFileExit_Click);
             // 
@@ -256,7 +267,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.flowLayoutPanel1);
-            this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
+            this.splitContainer1.Panel2.Controls.Add(this.dgvDataPoints);
             this.splitContainer1.Size = new System.Drawing.Size(1045, 656);
             this.splitContainer1.SplitterDistance = 814;
             this.splitContainer1.TabIndex = 1;
@@ -270,25 +281,23 @@
             this.flowLayoutPanel1.Size = new System.Drawing.Size(223, 74);
             this.flowLayoutPanel1.TabIndex = 1;
             // 
-            // dataGridView1
+            // dgvDataPoints
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.AllowUserToOrderColumns = true;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(52, 157);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(107, 77);
-            this.dataGridView1.TabIndex = 0;
+            this.dgvDataPoints.AllowUserToAddRows = false;
+            this.dgvDataPoints.AllowUserToDeleteRows = false;
+            this.dgvDataPoints.AllowUserToOrderColumns = true;
+            this.dgvDataPoints.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvDataPoints.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvDataPoints.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dgvDataPoints.Location = new System.Drawing.Point(0, 80);
+            this.dgvDataPoints.Name = "dgvDataPoints";
+            this.dgvDataPoints.ReadOnly = true;
+            this.dgvDataPoints.Size = new System.Drawing.Size(223, 572);
+            this.dgvDataPoints.TabIndex = 0;
             // 
-            // menuFileSave
+            // dataPointBindingSource
             // 
-            this.menuFileSave.Enabled = false;
-            this.menuFileSave.Name = "menuFileSave";
-            this.menuFileSave.Size = new System.Drawing.Size(152, 22);
-            this.menuFileSave.Text = "Save";
-            this.menuFileSave.Click += new System.EventHandler(this.Save);
+            this.dataPointBindingSource.DataSource = typeof(GraphValues.DataPoint);
             // 
             // MainForm
             // 
@@ -311,7 +320,8 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDataPoints)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataPointBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -329,7 +339,7 @@
         private System.Windows.Forms.ToolStripButton toolStripButtonBoundary;
         private System.Windows.Forms.ToolStripButton toolStripButtonPoint;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dgvDataPoints;
         private System.Windows.Forms.ToolStripTextBox txtXStart;
         private System.Windows.Forms.ToolStripTextBox txtXEnd;
         private System.Windows.Forms.ToolStripLabel lblXEnd;
@@ -341,6 +351,7 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.ToolStripMenuItem menuFileSaveAs;
         private System.Windows.Forms.ToolStripMenuItem menuFileSave;
+        private System.Windows.Forms.BindingSource dataPointBindingSource;
     }
 }
 
