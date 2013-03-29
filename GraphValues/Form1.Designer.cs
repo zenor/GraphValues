@@ -284,7 +284,6 @@
             // dgvDataPoints
             // 
             this.dgvDataPoints.AllowUserToAddRows = false;
-            this.dgvDataPoints.AllowUserToDeleteRows = false;
             this.dgvDataPoints.AllowUserToOrderColumns = true;
             this.dgvDataPoints.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvDataPoints.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -294,6 +293,7 @@
             this.dgvDataPoints.ReadOnly = true;
             this.dgvDataPoints.Size = new System.Drawing.Size(223, 572);
             this.dgvDataPoints.TabIndex = 0;
+            this.dgvDataPoints.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dgvDataPoints_UserDeletingRow);
             // 
             // dataPointBindingSource
             // 

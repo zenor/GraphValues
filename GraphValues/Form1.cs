@@ -268,5 +268,14 @@ namespace GraphValues
 
             writer.Close();
         }
+
+        private void dgvDataPoints_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            Debug.WriteLine("Deleting row: " + e.Row.Index);
+            // Delete the equivalent entry in _visPoints.
+            // This depends on the 2 lists being kept in the same order
+            _visPoints.RemoveAt(e.Row.Index);
+            graphImage.Invalidate();
+        }
     }
 }
