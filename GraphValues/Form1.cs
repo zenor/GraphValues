@@ -19,8 +19,12 @@ namespace GraphValues
         
         Rectangle drawingRect;
 
-        List<Point> VisPoints = new List<Point>();
-        List<PointF> PercentPoints = new List<PointF>();
+        List<Point> _visPoints = new List<Point>();
+        List<PointF> _percentPoints = new List<PointF>();
+        List<PointF> _dataPoints = new List<PointF>();
+
+        //public List<PointF> PercentPoints { get { return _percentPoints; } }
+        //public BindingList<PointF> DataPoints 
 
         enum Mode {Boundary, Point};
 
@@ -43,8 +47,8 @@ namespace GraphValues
             graphImage.Width = graphImage.Image.Width;
             graphImage.Height = graphImage.Image.Height;
 
-            graphImage.Location = new Point((this.Width / 2) - (graphImage.Width / 2),
-                (this.Height / 2) - (graphImage.Height / 2));
+            graphImage.Location = new Point((graphImage.Parent.Width / 2) - (graphImage.Width / 2),
+                (graphImage.Parent.Height / 2) - (graphImage.Height / 2));
 
             SetMode(Mode.Boundary);
         }
@@ -93,7 +97,7 @@ namespace GraphValues
         {
             e.Graphics.DrawRectangle(Pens.Red, drawingRect);
 
-            foreach (Point point in VisPoints)
+            foreach (Point point in _visPoints)
             {
                 e.Graphics.FillEllipse(Brushes.Red, point.X - 2, point.Y - 2, 4, 4);
             }
@@ -114,10 +118,10 @@ namespace GraphValues
             if (_pointMode)
             {
                 Point point = new Point(e.X, e.Y);
-                VisPoints.Add(point);
+                _visPoints.Add(point);
                 graphImage.Invalidate();
 
-                PercentPoints.Add(GetScalePoint(point));
+                _percentPoints.Add(GetScalePoint(point));
             }
         }
 
