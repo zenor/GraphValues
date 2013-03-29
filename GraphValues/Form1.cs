@@ -14,16 +14,19 @@ namespace GraphValues
     public partial class MainForm : Form
     {
         private Point _start = new Point();
-        bool _boundaryMode, _pointMode;
+        bool _axisMode, _pointMode;
         bool _drawing = false;
         
         Rectangle drawingRect;
 
+        enum AxisData
+        {
+            XStart = 0, XEnd = 1, YStart = 2, YEnd = 3
+        };
+        List<float> _axisData = new List<float>(4);
         List<Point> _visPoints = new List<Point>();
-        List<PointF> _percentPoints = new List<PointF>();
         List<PointF> _dataPoints = new List<PointF>();
 
-        //public List<PointF> PercentPoints { get { return _percentPoints; } }
         //public BindingList<PointF> DataPoints 
 
         enum Mode {Boundary, Point};
@@ -31,7 +34,9 @@ namespace GraphValues
         public MainForm()
         {
             InitializeComponent();
-            
+
+            for (int i = 0; i < 4; i++)
+                _axisData.Add(0f);
         }
 
         private void menuFileOpen_Click(object sender, EventArgs e)
@@ -60,7 +65,7 @@ namespace GraphValues
 
         private void graphImage_MouseDown(object sender, MouseEventArgs e)
         {
-            if (_boundaryMode)
+            if (_axisMode)
             {
                 _start = e.Location;
                 drawingRect = new Rectangle(e.X, e.Y, 0, 0);
@@ -71,7 +76,7 @@ namespace GraphValues
 
         private void graphImage_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_drawing && _boundaryMode)
+            if (_drawing && _axisMode)
             {
                 if (graphImage.Image == null)
                     return;
@@ -84,7 +89,7 @@ namespace GraphValues
 
         private void graphImage_MouseUp(object sender, MouseEventArgs e)
         {
-            if (_drawing && _boundaryMode)
+            if (_drawing && _axisMode)
             {
                 _drawing = false;
                 SetMode(Mode.Point);
@@ -121,14 +126,14 @@ namespace GraphValues
                 _visPoints.Add(point);
                 graphImage.Invalidate();
 
-                _percentPoints.Add(GetScalePoint(point));
+                _dataPoints.Add(GetScalePoint(point));
             }
         }
 
         private void SwitchModes()
         {
-            _boundaryMode = !_boundaryMode;
-            toolStripButtonBoundary.Checked = _boundaryMode;
+            _axisMode = !_axisMode;
+            toolStripButtonBoundary.Checked = _axisMode;
 
             _pointMode = !_pointMode;
             toolStripButtonPoint.Checked = _pointMode;
@@ -138,13 +143,13 @@ namespace GraphValues
         {
             if (mode == Mode.Boundary)
             {
-                _boundaryMode = toolStripButtonBoundary.Checked = true;
+                _axisMode = toolStripButtonBoundary.Checked = true;
                 _pointMode = toolStripButtonPoint.Checked = false;
             }
             else
             {
                 _pointMode = toolStripButtonPoint.Checked = true;
-                _boundaryMode = toolStripButtonBoundary.Checked = false;
+                _axisMode = toolStripButtonBoundary.Checked = false;
             }
         }
 
@@ -152,12 +157,36 @@ namespace GraphValues
         {
             float relX = visPoint.X - drawingRect.X;
             // rectangle is wrong way up compared to the graph
-            float relY = drawingRect.Height - visPoint.Y; 
+            float relY = drawingRect.Height - visPoint.Y;
 
-            float percentX = (relX / (float)drawingRect.Width) * 100f;
+            float percentX = (relX / (float)drawingRect.Width);
             System.Diagnostics.Debug.WriteLine("percentX = " + percentX);
 
-            return new PointF(percentX, 0f);
+            float xAxisLength = _axisData[(int)AxisData.XEnd] - _axisData[(int)AxisData.XStart];
+            float realXVal = _axisData[(int)AxisData.XStart] + (xAxisLength * percentX);
+            Debug.WriteLine("realXVal = " + realXVal);
+
+            return new PointF(realXVal, 0f);
+        }
+
+        private void ValidatingAxisText(object sender, CancelEventArgs e)
+        {
+            Debug.WriteLine("sender type = " + sender.GetType().ToString());
+            ToolStripTextBox txtBox = (ToolStripTextBox)sender;
+            float val;
+            if (!float.TryParse(txtBox.Text, out val))
+            {
+                e.Cancel = true;
+                txtBox.BackColor = Color.Red;
+            }
+            else
+            {
+                txtBox.BackColor = SystemColors.Window;
+                AxisData index = (AxisData) Enum.Parse(typeof(AxisData), txtBox.Tag.ToString());
+                _axisData[(int)index] = val;
+            }
+            foreach (int i in _axisData)
+                Debug.WriteLine("axis data: " + i);
         }
     }
 }

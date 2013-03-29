@@ -159,6 +159,8 @@
             this.txtYEnd.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtYEnd.Name = "txtYEnd";
             this.txtYEnd.Size = new System.Drawing.Size(70, 25);
+            this.txtYEnd.Tag = "YEnd";
+            this.txtYEnd.Validating += new System.ComponentModel.CancelEventHandler(this.ValidatingAxisText);
             // 
             // lblYEnd
             // 
@@ -174,6 +176,8 @@
             this.txtYStart.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtYStart.Name = "txtYStart";
             this.txtYStart.Size = new System.Drawing.Size(70, 25);
+            this.txtYStart.Tag = "YStart";
+            this.txtYStart.Validating += new System.ComponentModel.CancelEventHandler(this.ValidatingAxisText);
             // 
             // lblYStart
             // 
@@ -189,6 +193,8 @@
             this.txtXEnd.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtXEnd.Name = "txtXEnd";
             this.txtXEnd.Size = new System.Drawing.Size(70, 25);
+            this.txtXEnd.Tag = "XEnd";
+            this.txtXEnd.Validating += new System.ComponentModel.CancelEventHandler(this.ValidatingAxisText);
             // 
             // lblXEnd
             // 
@@ -204,6 +210,8 @@
             this.txtXStart.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtXStart.Name = "txtXStart";
             this.txtXStart.Size = new System.Drawing.Size(70, 25);
+            this.txtXStart.Tag = "XStart";
+            this.txtXStart.Validating += new System.ComponentModel.CancelEventHandler(this.ValidatingAxisText);
             // 
             // lblXStart
             // 
