@@ -19,6 +19,7 @@ namespace GraphValues
         private Point _start = new Point();
         bool _axisMode, _pointMode;
         bool _drawing = false;
+        bool _xLog, _yLog;
         
         Rectangle drawingRect;
 
@@ -32,6 +33,8 @@ namespace GraphValues
 
         enum Mode {Boundary, Point};
         enum ScaleType { Linear, Logarithmic };
+
+        enum Axis { X, Y };
 
         string _currentSaveFile = "";
 
@@ -228,17 +231,32 @@ namespace GraphValues
             double percentY = (relY / (float)drawingRect.Height);
             System.Diagnostics.Debug.WriteLine("percents = " + percentX + ", " + percentY);
 
-            double xAxisLength = _axisData[(int)AxisData.XEnd] - _axisData[(int)AxisData.XStart];
-            double realXVal = _axisData[(int)AxisData.XStart] + (xAxisLength * percentX);
-            
-            double realYVal = LogScale(percentY);
-            //double yAxisLength = _axisData[(int)AxisData.YEnd] - _axisData[(int)AxisData.YStart];
-            //double realYVal = _axisData[(int)AxisData.YStart] + (yAxisLength * percentY);
+            double realXVal;
+            if (_xLog)
+                realXVal = LogScale(percentX, Axis.X);
+            else
+                realXVal = LinearScale(percentX, Axis.X);
+
+            double realYVal;
+            if (_yLog)
+                realYVal = LogScale(percentY, Axis.Y);
+            else
+                realYVal = LinearScale(percentY, Axis.Y);
 
             return new DataPoint(realXVal, realYVal);
         }
 
-        private double LogScale(double percent)
+        private double LinearScale(double percent, Axis axis)
+        {
+            double start = axis == Axis.X ? _axisData[(int)AxisData.XStart] : _axisData[(int)AxisData.YStart];
+            double end = axis == Axis.X ? _axisData[(int)AxisData.XEnd] : _axisData[(int)AxisData.YEnd];
+
+            double axisLength = end - start;
+            double realVal = start + (axisLength * percent);
+            return realVal;
+        }
+
+        private double LogScale(double percent, Axis axis)
         {
             // scale reads eg 0 .. 10000 in real numbers
             // that would make internal LINEAR scale 0 .. 4 (0, 10, 100, 1000, 10000) in nice equal steps
@@ -249,9 +267,17 @@ namespace GraphValues
 
             //_axisData[(int)AxisData.YStart] = 0.000000000000000001d;
             //_axisData[(int)AxisData.YEnd] = 0.0000000000001d;
-
-            double logStart = Math.Log10(_axisData[(int)AxisData.YStart]);
-            double logEnd = Math.Log10(_axisData[(int)AxisData.YEnd]);
+            double logStart, logEnd;
+            if (axis == Axis.X)
+            {
+                logStart = Math.Log10(_axisData[(int)AxisData.XStart]);
+                logEnd = Math.Log10(_axisData[(int)AxisData.XEnd]);
+            }
+            else
+            {
+                logStart = Math.Log10(_axisData[(int)AxisData.YStart]);
+                logEnd = Math.Log10(_axisData[(int)AxisData.YEnd]);
+            }
             Debug.WriteLine("log start, end = " + logStart + " " + logEnd);
 
             double axisLength = logEnd - logStart;
@@ -304,6 +330,16 @@ namespace GraphValues
             // This depends on the 2 lists being kept in the same order
             _visPoints.RemoveAt(e.Row.Index);
             graphImage.Invalidate();
+        }
+
+        private void chkXLog_CheckedChanged(object sender, EventArgs e)
+        {
+            _xLog = !_xLog;
+        }
+
+        private void chkYLog_CheckedChanged(object sender, EventArgs e)
+        {
+            _yLog = !_yLog;
         }
     }
 }

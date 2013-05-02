@@ -45,7 +45,7 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.flowLayoutAxisControl = new System.Windows.Forms.FlowLayoutPanel();
             this.lblXAxis = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.chkXLog = new System.Windows.Forms.CheckBox();
             this.flowLayoutXStart = new System.Windows.Forms.FlowLayoutPanel();
             this.lblXStart = new System.Windows.Forms.Label();
             this.txtXStart = new System.Windows.Forms.TextBox();
@@ -235,7 +235,7 @@
             // 
             this.flowLayoutAxisControl.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.flowLayoutAxisControl.Controls.Add(this.lblXAxis);
-            this.flowLayoutAxisControl.Controls.Add(this.checkBox1);
+            this.flowLayoutAxisControl.Controls.Add(this.chkXLog);
             this.flowLayoutAxisControl.Controls.Add(this.flowLayoutXStart);
             this.flowLayoutAxisControl.Controls.Add(this.flowLayoutXEnd);
             this.flowLayoutAxisControl.Controls.Add(this.lblYAxis);
@@ -258,16 +258,17 @@
             this.lblXAxis.TabIndex = 0;
             this.lblXAxis.Text = "X Axis";
             // 
-            // checkBox1
+            // chkXLog
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox1.Location = new System.Drawing.Point(3, 16);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(80, 17);
-            this.checkBox1.TabIndex = 1;
-            this.checkBox1.Text = "Log Scale?";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.chkXLog.AutoSize = true;
+            this.chkXLog.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkXLog.Location = new System.Drawing.Point(3, 16);
+            this.chkXLog.Name = "chkXLog";
+            this.chkXLog.Size = new System.Drawing.Size(80, 17);
+            this.chkXLog.TabIndex = 1;
+            this.chkXLog.Text = "Log Scale?";
+            this.chkXLog.UseVisualStyleBackColor = true;
+            this.chkXLog.CheckedChanged += new System.EventHandler(this.chkXLog_CheckedChanged);
             // 
             // flowLayoutXStart
             // 
@@ -350,6 +351,7 @@
             this.chkYLog.TabIndex = 4;
             this.chkYLog.Text = "Log Scale?";
             this.chkYLog.UseVisualStyleBackColor = true;
+            this.chkYLog.CheckedChanged += new System.EventHandler(this.chkYLog_CheckedChanged);
             // 
             // flowLayoutYStart
             // 
@@ -441,7 +443,7 @@
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
             this.Name = "MainForm";
-            this.Text = "I stealz datas";
+            this.Text = "Graph Grabber, stealing your dataz";
             ((System.ComponentModel.ISupportInitialize)(this.graphImage)).EndInit();
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
@@ -495,7 +497,7 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutXStart;
         private System.Windows.Forms.Label lblXStart;
         private System.Windows.Forms.TextBox txtXStart;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox chkXLog;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutXEnd;
         private System.Windows.Forms.Label lblXEnd;
         private System.Windows.Forms.TextBox txtXEnd;
