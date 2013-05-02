@@ -9,10 +9,10 @@ namespace GraphValues
 {
     class DataPoint
     {
-        public float X { private set; get; }
-        public float Y { private set; get; }
+        public double X { private set; get; }
+        public double Y { private set; get; }
 
-        public DataPoint(float x, float y)
+        public DataPoint(double x, double y)
         {
             X = x;
             Y = y;

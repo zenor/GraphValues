@@ -26,11 +26,12 @@ namespace GraphValues
         {
             XStart = 0, XEnd = 1, YStart = 2, YEnd = 3
         };
-        List<float> _axisData = new List<float>(4);
+        List<double> _axisData = new List<double>(4);
         List<Point> _visPoints = new List<Point>();
         BindingList<DataPoint> _dataPoints = new BindingList<DataPoint>();
 
         enum Mode {Boundary, Point};
+        enum ScaleType { Linear, Logarithmic };
 
         string _currentSaveFile = "";
 
@@ -194,7 +195,6 @@ namespace GraphValues
 
         private void RemovePoint(Point point)
         {
-            //foreach (Point visPoint in _visPoints)
             int indexToRemove = -1;
             for (int i = 0; i < _visPoints.Count; i++)
             {
@@ -217,32 +217,58 @@ namespace GraphValues
 
         private DataPoint GetScalePoint(Point visPoint)
         {
-            float relX = visPoint.X - drawingRect.Left;
+            double relX = visPoint.X - drawingRect.Left;
             // rectangle is wrong way up compared to the graph
             // so we first find where we are whilst upside down
             // then flip, by subtracting that from the height.
-            float relY = visPoint.Y - drawingRect.Top;
+            double relY = visPoint.Y - drawingRect.Top;
             relY = drawingRect.Height - relY;
 
-            float percentX = (relX / (float)drawingRect.Width);
-            float percentY = (relY / (float)drawingRect.Height);
+            double percentX = (relX / (float)drawingRect.Width);
+            double percentY = (relY / (float)drawingRect.Height);
             System.Diagnostics.Debug.WriteLine("percents = " + percentX + ", " + percentY);
 
-            float xAxisLength = _axisData[(int)AxisData.XEnd] - _axisData[(int)AxisData.XStart];
-            float realXVal = _axisData[(int)AxisData.XStart] + (xAxisLength * percentX);
-            float yAxisLength = _axisData[(int)AxisData.YEnd] - _axisData[(int)AxisData.YStart];
-            float realYVal = _axisData[(int)AxisData.YStart] + (yAxisLength * percentY);
-            Debug.WriteLine("realVals = " + realXVal + ", " + realYVal);
+            double xAxisLength = _axisData[(int)AxisData.XEnd] - _axisData[(int)AxisData.XStart];
+            double realXVal = _axisData[(int)AxisData.XStart] + (xAxisLength * percentX);
+            
+            double realYVal = LogScale(percentY);
+            //double yAxisLength = _axisData[(int)AxisData.YEnd] - _axisData[(int)AxisData.YStart];
+            //double realYVal = _axisData[(int)AxisData.YStart] + (yAxisLength * percentY);
 
             return new DataPoint(realXVal, realYVal);
+        }
+
+        private double LogScale(double percent)
+        {
+            // scale reads eg 0 .. 10000 in real numbers
+            // that would make internal LINEAR scale 0 .. 4 (0, 10, 100, 1000, 10000) in nice equal steps
+            // user clicks 75% up the axis, 75% on our internal linear scale is 3
+            // 3 is the logarithm of the number we clicked on == 1000
+            // ie what number gives a logarithm of 3? we work out 10^3
+            // so after getting the same old linear code below, do 10^realVal
+
+            _axisData[(int)AxisData.YStart] = 0.000000000000000001d;
+            _axisData[(int)AxisData.YEnd] = 0.0000000000001d;
+
+            double logStart = Math.Log10(_axisData[(int)AxisData.YStart]);
+            double logEnd = Math.Log10(_axisData[(int)AxisData.YEnd]);
+            Debug.WriteLine("log start, end = " + logStart + " " + logEnd);
+
+            double axisLength = logEnd - logStart;
+            Debug.WriteLine("loglength = " + axisLength);
+            double logVal = logStart + (axisLength * percent);
+            Debug.WriteLine("logVal = " + logVal);
+            double realVal = Math.Pow(10, logVal);
+            Debug.WriteLine("realVal = " + realVal);
+            return realVal;
         }
 
         private void ValidatingAxisText(object sender, CancelEventArgs e)
         {
             Debug.WriteLine("sender type = " + sender.GetType().ToString());
             ToolStripTextBox txtBox = (ToolStripTextBox)sender;
-            float val;
-            if (!float.TryParse(txtBox.Text, out val))
+            double val;
+            if (!double.TryParse(txtBox.Text, out val))
             {
                 e.Cancel = true;
                 txtBox.BackColor = Color.Red;
