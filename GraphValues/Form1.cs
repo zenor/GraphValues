@@ -266,7 +266,7 @@ namespace GraphValues
         private void ValidatingAxisText(object sender, CancelEventArgs e)
         {
             Debug.WriteLine("sender type = " + sender.GetType().ToString());
-            ToolStripTextBox txtBox = (ToolStripTextBox)sender;
+            TextBox txtBox = (TextBox)sender;
             double val;
             if (!double.TryParse(txtBox.Text, out val))
             {
