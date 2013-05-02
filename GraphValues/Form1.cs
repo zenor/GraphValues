@@ -247,8 +247,8 @@ namespace GraphValues
             // ie what number gives a logarithm of 3? we work out 10^3
             // so after getting the same old linear code below, do 10^realVal
 
-            _axisData[(int)AxisData.YStart] = 0.000000000000000001d;
-            _axisData[(int)AxisData.YEnd] = 0.0000000000001d;
+            //_axisData[(int)AxisData.YStart] = 0.000000000000000001d;
+            //_axisData[(int)AxisData.YEnd] = 0.0000000000001d;
 
             double logStart = Math.Log10(_axisData[(int)AxisData.YStart]);
             double logEnd = Math.Log10(_axisData[(int)AxisData.YEnd]);
@@ -275,11 +275,13 @@ namespace GraphValues
             }
             else
             {
+                Debug.WriteLine("parsed double = " + val);
                 txtBox.BackColor = SystemColors.Window;
-                AxisData index = (AxisData) Enum.Parse(typeof(AxisData), txtBox.Tag.ToString());
-                _axisData[(int)index] = val;
+                int index = (int)((AxisData) Enum.Parse(typeof(AxisData), txtBox.Tag.ToString()));
+                _axisData[index] = val;
+                Debug.WriteLine("storeed double = " + _axisData[index]);
             }
-            foreach (int i in _axisData)
+            foreach (double i in _axisData)
                 Debug.WriteLine("axis data: " + i);
         }
 
