@@ -16,12 +16,12 @@ namespace GraphValues
     {
         const int DELETE_TOLERENCE_VIS = 3;
 
-        private Point _start = new Point();
+        Point _start = new Point();
         bool _axisMode, _pointMode;
         bool _drawing = false;
         bool _xLog, _yLog;
         
-        Rectangle drawingRect;
+        Rectangle _drawingRect;
 
         enum AxisData
         {
@@ -33,7 +33,6 @@ namespace GraphValues
 
         enum Mode {Boundary, Point};
         enum ScaleType { Linear, Logarithmic };
-
         enum Axis { X, Y };
 
         string _currentSaveFile = "";
@@ -89,7 +88,7 @@ namespace GraphValues
             if (_axisMode)
             {
                 _start = e.Location;
-                drawingRect = new Rectangle(e.X, e.Y, 0, 0);
+                _drawingRect = new Rectangle(e.X, e.Y, 0, 0);
                 graphImage.Invalidate();
                 _drawing = true;
             }
@@ -102,7 +101,7 @@ namespace GraphValues
                 if (graphImage.Image == null)
                     return;
 
-                drawingRect = new Rectangle(_start.X, _start.Y, Math.Max(_start.X, e.X) - Math.Min(_start.X, e.X), Math.Max(_start.Y, e.Y) - Math.Min(_start.Y, e.Y));
+                _drawingRect = new Rectangle(_start.X, _start.Y, Math.Max(_start.X, e.X) - Math.Min(_start.X, e.X), Math.Max(_start.Y, e.Y) - Math.Min(_start.Y, e.Y));
 
                 graphImage.Invalidate();
             }
@@ -114,14 +113,12 @@ namespace GraphValues
             {
                 _drawing = false;
                 SetMode(Mode.Point);
-
-
             }
         }
 
         private void graphImage_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.DrawRectangle(Pens.Red, drawingRect);
+            e.Graphics.DrawRectangle(Pens.Red, _drawingRect);
 
             foreach (Point point in _visPoints)
             {
@@ -152,10 +149,6 @@ namespace GraphValues
 
                 menuFileSaveAs.Enabled = _dataPoints.Count > 0 ? true : false;
                 menuFileSave.Enabled = (_currentSaveFile != "" && _dataPoints.Count > 0) ? true : false;
-
-                Debug.WriteLine("num points = " + _visPoints.Count);
-                for (int i = 0; i < _visPoints.Count; i++)
-                    Debug.WriteLine("click. " + _visPoints[i].ToString() + "|||" + _dataPoints[i].ToString());
             }
         }
 
@@ -186,8 +179,8 @@ namespace GraphValues
         {
             // The code can handle points placed outside of the drawing rect
             // but we will disallow that to prevent polluting the data and screen
-            if (point.X < drawingRect.Left || point.X > drawingRect.Right
-                || point.Y < drawingRect.Top || point.Y > drawingRect.Bottom)
+            if (point.X < _drawingRect.Left || point.X > _drawingRect.Right
+                || point.Y < _drawingRect.Top || point.Y > _drawingRect.Bottom)
                 return;
 
             _visPoints.Add(point);
@@ -220,15 +213,15 @@ namespace GraphValues
 
         private DataPoint GetScalePoint(Point visPoint)
         {
-            double relX = visPoint.X - drawingRect.Left;
+            double relX = visPoint.X - _drawingRect.Left;
             // rectangle is wrong way up compared to the graph
             // so we first find where we are whilst upside down
             // then flip, by subtracting that from the height.
-            double relY = visPoint.Y - drawingRect.Top;
-            relY = drawingRect.Height - relY;
+            double relY = visPoint.Y - _drawingRect.Top;
+            relY = _drawingRect.Height - relY;
 
-            double percentX = (relX / (float)drawingRect.Width);
-            double percentY = (relY / (float)drawingRect.Height);
+            double percentX = (relX / (float)_drawingRect.Width);
+            double percentY = (relY / (float)_drawingRect.Height);
             System.Diagnostics.Debug.WriteLine("percents = " + percentX + ", " + percentY);
 
             double realXVal;
@@ -258,15 +251,12 @@ namespace GraphValues
 
         private double LogScale(double percent, Axis axis)
         {
-            // scale reads eg 0 .. 10000 in real numbers
-            // that would make internal LINEAR scale 0 .. 4 (0, 10, 100, 1000, 10000) in nice equal steps
+            // scale reads eg 1 .. 10000 in real numbers
+            // that would make internal LINEAR scale 0 .. 4 (1, 10, 100, 1000, 10000) in nice equal steps
             // user clicks 75% up the axis, 75% on our internal linear scale is 3
             // 3 is the logarithm of the number we clicked on == 1000
             // ie what number gives a logarithm of 3? we work out 10^3
             // so after getting the same old linear code below, do 10^realVal
-
-            //_axisData[(int)AxisData.YStart] = 0.000000000000000001d;
-            //_axisData[(int)AxisData.YEnd] = 0.0000000000001d;
             double logStart, logEnd;
             if (axis == Axis.X)
             {
@@ -278,20 +268,15 @@ namespace GraphValues
                 logStart = Math.Log10(_axisData[(int)AxisData.YStart]);
                 logEnd = Math.Log10(_axisData[(int)AxisData.YEnd]);
             }
-            Debug.WriteLine("log start, end = " + logStart + " " + logEnd);
-
             double axisLength = logEnd - logStart;
-            Debug.WriteLine("loglength = " + axisLength);
             double logVal = logStart + (axisLength * percent);
-            Debug.WriteLine("logVal = " + logVal);
             double realVal = Math.Pow(10, logVal);
-            Debug.WriteLine("realVal = " + realVal);
+
             return realVal;
         }
 
         private void ValidatingAxisText(object sender, CancelEventArgs e)
         {
-            Debug.WriteLine("sender type = " + sender.GetType().ToString());
             TextBox txtBox = (TextBox)sender;
             double val;
             if (!double.TryParse(txtBox.Text, out val))
@@ -301,14 +286,10 @@ namespace GraphValues
             }
             else
             {
-                Debug.WriteLine("parsed double = " + val);
                 txtBox.BackColor = SystemColors.Window;
                 int index = (int)((AxisData) Enum.Parse(typeof(AxisData), txtBox.Tag.ToString()));
                 _axisData[index] = val;
-                Debug.WriteLine("storeed double = " + _axisData[index]);
             }
-            foreach (double i in _axisData)
-                Debug.WriteLine("axis data: " + i);
         }
 
         private void Save(object sender, EventArgs e)
@@ -325,7 +306,6 @@ namespace GraphValues
 
         private void dgvDataPoints_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
-            Debug.WriteLine("Deleting row: " + e.Row.Index);
             // Delete the equivalent entry in _visPoints.
             // This depends on the 2 lists being kept in the same order
             _visPoints.RemoveAt(e.Row.Index);
