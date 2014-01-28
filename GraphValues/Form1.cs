@@ -27,7 +27,7 @@ namespace GraphValues
         {
             XStart = 0, XEnd = 1, YStart = 2, YEnd = 3
         };
-        List<double> _axisData = new List<double>(4);
+        List<double?> _axisData = new List<double?>(4);
         List<Point> _visPoints = new List<Point>();
         BindingList<DataPoint> _dataPoints = new BindingList<DataPoint>();
 
@@ -42,7 +42,7 @@ namespace GraphValues
             InitializeComponent();
 
             for (int i = 0; i < 4; i++)
-                _axisData.Add(0f);
+                _axisData.Add(null);
 
             dgvDataPoints.DataSource = _dataPoints;
         }
@@ -142,6 +142,16 @@ namespace GraphValues
         {
             if (_pointMode)
             {
+                foreach (double? axisData in _axisData)
+                {
+                    if (!axisData.HasValue)
+                    {
+                        Debug.Print("null axisdata");
+                        MessageBox.Show("You need to set start and end values for each axis.");
+                        return;
+                    }
+                }
+
                 Point point = new Point(e.X, e.Y);
 
                 if (e.Button == System.Windows.Forms.MouseButtons.Left)
@@ -243,8 +253,8 @@ namespace GraphValues
 
         private double LinearScale(double percent, Axis axis)
         {
-            double start = axis == Axis.X ? _axisData[(int)AxisData.XStart] : _axisData[(int)AxisData.YStart];
-            double end = axis == Axis.X ? _axisData[(int)AxisData.XEnd] : _axisData[(int)AxisData.YEnd];
+            double start = axis == Axis.X ? _axisData[(int)AxisData.XStart].Value : _axisData[(int)AxisData.YStart].Value;
+            double end = axis == Axis.X ? _axisData[(int)AxisData.XEnd].Value : _axisData[(int)AxisData.YEnd].Value;
 
             double axisLength = end - start;
             double realVal = start + (axisLength * percent);
@@ -262,13 +272,13 @@ namespace GraphValues
             double logStart, logEnd;
             if (axis == Axis.X)
             {
-                logStart = Math.Log10(_axisData[(int)AxisData.XStart]);
-                logEnd = Math.Log10(_axisData[(int)AxisData.XEnd]);
+                logStart = Math.Log10(_axisData[(int)AxisData.XStart].Value);
+                logEnd = Math.Log10(_axisData[(int)AxisData.XEnd].Value);
             }
             else
             {
-                logStart = Math.Log10(_axisData[(int)AxisData.YStart]);
-                logEnd = Math.Log10(_axisData[(int)AxisData.YEnd]);
+                logStart = Math.Log10(_axisData[(int)AxisData.YStart].Value);
+                logEnd = Math.Log10(_axisData[(int)AxisData.YEnd].Value);
             }
             double axisLength = logEnd - logStart;
             double logVal = logStart + (axisLength * percent);
@@ -309,17 +319,17 @@ namespace GraphValues
 
         private void ValidateAxisTextBox(object sender, EventArgs e)
         {
-            Debug.Print("validateingAxisText");
             TextBox txtBox = (TextBox)sender;
             double val;
+            int index = (int)((AxisData)Enum.Parse(typeof(AxisData), txtBox.Tag.ToString()));
             if (!double.TryParse(txtBox.Text, out val))
             {
                 txtBox.BackColor = Color.Red;
+                _axisData[index] = null;
             }
             else
             {
                 txtBox.BackColor = SystemColors.Window;
-                int index = (int)((AxisData)Enum.Parse(typeof(AxisData), txtBox.Tag.ToString()));
                 _axisData[index] = val;
             }
         }
