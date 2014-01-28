@@ -16,7 +16,7 @@ namespace GraphValues
     {
         const int DELETE_TOLERENCE_VIS = 3;
 
-        Point _start = new Point();
+        Point _rectangleClickPoint = new Point();
         bool _axisMode, _pointMode;
         bool _drawing = false;
         bool _xLog, _yLog;
@@ -87,7 +87,7 @@ namespace GraphValues
         {
             if (_axisMode)
             {
-                _start = e.Location;
+                _rectangleClickPoint = e.Location;
                 _drawingRect = new Rectangle(e.X, e.Y, 0, 0);
                 graphImage.Invalidate();
                 _drawing = true;
@@ -101,7 +101,9 @@ namespace GraphValues
                 if (graphImage.Image == null)
                     return;
 
-                _drawingRect = new Rectangle(_start.X, _start.Y, Math.Max(_start.X, e.X) - Math.Min(_start.X, e.X), Math.Max(_start.Y, e.Y) - Math.Min(_start.Y, e.Y));
+                int x = e.X < _rectangleClickPoint.X ? e.X : _rectangleClickPoint.X;
+                int y = e.Y < _rectangleClickPoint.Y ? e.Y : _rectangleClickPoint.Y;
+                _drawingRect = new Rectangle(x, y, Math.Max(_rectangleClickPoint.X, e.X) - Math.Min(_rectangleClickPoint.X, e.X), Math.Max(_rectangleClickPoint.Y, e.Y) - Math.Min(_rectangleClickPoint.Y, e.Y));
 
                 graphImage.Invalidate();
             }
