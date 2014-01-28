@@ -277,23 +277,6 @@ namespace GraphValues
             return realVal;
         }
 
-        private void ValidatingAxisText(object sender, CancelEventArgs e)
-        {
-            TextBox txtBox = (TextBox)sender;
-            double val;
-            if (!double.TryParse(txtBox.Text, out val))
-            {
-                e.Cancel = true;
-                txtBox.BackColor = Color.Red;
-            }
-            else
-            {
-                txtBox.BackColor = SystemColors.Window;
-                int index = (int)((AxisData) Enum.Parse(typeof(AxisData), txtBox.Tag.ToString()));
-                _axisData[index] = val;
-            }
-        }
-
         private void Save(object sender, EventArgs e)
         {
             if (_currentSaveFile == "")
@@ -322,6 +305,23 @@ namespace GraphValues
         private void chkYLog_CheckedChanged(object sender, EventArgs e)
         {
             _yLog = !_yLog;
+        }
+
+        private void ValidateAxisTextBox(object sender, EventArgs e)
+        {
+            Debug.Print("validateingAxisText");
+            TextBox txtBox = (TextBox)sender;
+            double val;
+            if (!double.TryParse(txtBox.Text, out val))
+            {
+                txtBox.BackColor = Color.Red;
+            }
+            else
+            {
+                txtBox.BackColor = SystemColors.Window;
+                int index = (int)((AxisData)Enum.Parse(typeof(AxisData), txtBox.Tag.ToString()));
+                _axisData[index] = val;
+            }
         }
     }
 }

@@ -299,7 +299,7 @@
             this.txtXStart.Size = new System.Drawing.Size(138, 20);
             this.txtXStart.TabIndex = 2;
             this.txtXStart.Tag = "XStart";
-            this.txtXStart.Validating += new System.ComponentModel.CancelEventHandler(this.ValidatingAxisText);
+            this.txtXStart.TextChanged += new System.EventHandler(this.ValidateAxisTextBox);
             // 
             // flowLayoutXEnd
             // 
@@ -330,7 +330,7 @@
             this.txtXEnd.Size = new System.Drawing.Size(138, 20);
             this.txtXEnd.TabIndex = 3;
             this.txtXEnd.Tag = "XEnd";
-            this.txtXEnd.Validating += new System.ComponentModel.CancelEventHandler(this.ValidatingAxisText);
+            this.txtXEnd.TextChanged += new System.EventHandler(this.ValidateAxisTextBox);
             // 
             // lblYAxis
             // 
@@ -382,7 +382,7 @@
             this.txtYStart.Size = new System.Drawing.Size(138, 20);
             this.txtYStart.TabIndex = 5;
             this.txtYStart.Tag = "YStart";
-            this.txtYStart.Validating += new System.ComponentModel.CancelEventHandler(this.ValidatingAxisText);
+            this.txtYStart.TextChanged += new System.EventHandler(this.ValidateAxisTextBox);
             // 
             // flowLayoutYEnd
             // 
@@ -413,7 +413,7 @@
             this.txtYEnd.Size = new System.Drawing.Size(138, 20);
             this.txtYEnd.TabIndex = 6;
             this.txtYEnd.Tag = "YEnd";
-            this.txtYEnd.Validating += new System.ComponentModel.CancelEventHandler(this.ValidatingAxisText);
+            this.txtYEnd.TextChanged += new System.EventHandler(this.ValidateAxisTextBox);
             // 
             // dgvDataPoints
             // 
